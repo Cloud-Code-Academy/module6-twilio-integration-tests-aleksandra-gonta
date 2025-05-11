@@ -14,19 +14,21 @@ private class TwilioServiceTest {
      */
     @IsTest
     static void testSendSMS() {
-        // TODO: Setup test data
-        // - Create test phone number and message body
+        String body = '{"account_sid": "ACbe591149b27ec2dfccd61dc8a5e35ec3", "api_version": "2010-04-01", "body": "Sent from your Twilio trial account - Test message from Salesforce 2025-05-11 13:47:01", "date_created": "Sun, 11 May 2025 13:47:01 +0000", "date_sent": null, "date_updated": "Sun, 11 May 2025 13:47:01 +0000", "direction": "outbound-api", "error_code": null, "error_message": null, "from": "+16073502062", "messaging_service_sid": null, "num_media": "0", "num_segments": "1", "price": null, "price_unit": "USD", "sid": "SM3024e53ddcf2928575600eced9dc5551", "status": "queued", "subresource_uris": {"media": "/2010-04-01/Accounts/ACbe591149b27ec2dfccd61dc8a5e35ec3/Messages/SM3024e53ddcf2928575600eced9dc5551/Media.json"}, "to": "+18777804236", "uri": "/2010-04-01/Accounts/ACbe591149b27ec2dfccd61dc8a5e35ec3/Messages/SM3024e53ddcf2928575600eced9dc5551.json"}';
         
-        // TODO: Setup mock callout response
-        // - Use TwilioCalloutMock to simulate a successful response
-        
-        // TODO: Execute the test
-        // - Call TwilioService.sendSMS() method
-        
-        // TODO: Verify results
-        // - Verify that response is successful
-        // - Verify status code is correct
-        // - Verify response body contains expected values (sid, status, etc.)
+       
+        Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock(201, body));
+        Test.startTest();
+        String toNumber = '+18777804236'; 
+        String messageBody = 'Test message';     
+        TwilioResponse response = TwilioService.sendSMS(toNumber, messageBody);
+        Test.stopTest();
+
+        Assert.isNotNull(response, 'Response should not be null');
+        Assert.areEqual(201, response.statusCode, 'Status code should be 201');
+        Assert.isTrue(response.success, 'Response is sucessful');
+        Assert.isTrue(response.body.contains('account_sid'));
+        Assert.isTrue(response.body.contains('status'));
     }
     
     /**
@@ -49,6 +51,18 @@ private class TwilioServiceTest {
         // - Verify that response is not successful
         // - Verify error status code is correct
         // - Verify error message is extracted correctly
+        String body = '{}';
+        
+        String toNumber = '+1234567890'; 
+        String messageBody = 'Test message';
+        Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock(500, body));
+        Test.startTest();  
+        TwilioResponse response = TwilioService.sendSMS(toNumber, messageBody);
+        Test.stopTest();
+
+        Assert.isNotNull(response, 'Response should not be null');
+        Assert.areEqual(500, response.statusCode, 'Status code should be 500');
+        Assert.isTrue(!response.success, 'Response is not sucessful');
     }
     
     /**
@@ -108,5 +122,13 @@ private class TwilioServiceTest {
         // - Verify that response indicates failure
         // - Verify that status code is set to 500 (or appropriate error code)
         // - Verify that error message is set correctly
+        String toNumber = '+1234567890'; 
+        String messageBody = 'Test message';
+        Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock('Mock exception for testing'));
+        Test.startTest();    
+        TwilioResponse response = TwilioService.sendSMS(toNumber, messageBody);
+        Test.stopTest();
+        
+        Assert.areEqual(500, response.statusCode, 'Status code should be 500');
     }
 } 
