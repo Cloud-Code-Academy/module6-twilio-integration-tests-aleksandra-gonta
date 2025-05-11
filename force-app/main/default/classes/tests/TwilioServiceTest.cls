@@ -20,7 +20,7 @@ private class TwilioServiceTest {
         Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock(201, body));
         Test.startTest();
         String toNumber = '+18777804236'; 
-        String messageBody = 'Test message';     
+        String messageBody = 'Test message';  
         TwilioResponse response = TwilioService.sendSMS(toNumber, messageBody);
         Test.stopTest();
 
@@ -124,11 +124,11 @@ private class TwilioServiceTest {
         // - Verify that error message is set correctly
         String toNumber = '+1234567890'; 
         String messageBody = 'Test message';
-        Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock('Mock exception for testing'));
+        Test.setMock(HttpCalloutMock.class, TwilioCalloutMock.createExceptionMock());
         Test.startTest();    
         TwilioResponse response = TwilioService.sendSMS(toNumber, messageBody);
+       
         Test.stopTest();
-        
         Assert.areEqual(500, response.statusCode, 'Status code should be 500');
     }
 } 

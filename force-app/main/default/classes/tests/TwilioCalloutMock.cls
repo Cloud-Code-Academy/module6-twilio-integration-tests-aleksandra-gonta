@@ -19,6 +19,7 @@ public class TwilioCalloutMock implements HttpCalloutMock {
     public TwilioCalloutMock(Integer statusCode, String responseBody) {
         this.statusCode = statusCode;
         this.responseBody = responseBody;
+        this.throwException = false;
     }
     
     /**
@@ -27,7 +28,6 @@ public class TwilioCalloutMock implements HttpCalloutMock {
      */
     public TwilioCalloutMock(String exceptionMessage) {
         this.throwException = true;
-        this.statusCode = 500;
         this.exceptionMessage = exceptionMessage;
     }
     
@@ -36,7 +36,7 @@ public class TwilioCalloutMock implements HttpCalloutMock {
      * @return TwilioCalloutMock An instance that will throw an exception
      */
     public static TwilioCalloutMock createExceptionMock() {
-        return new TwilioCalloutMock(this.exceptionMessage);
+        return new TwilioCalloutMock('Mock exception for testing');
     }
     
     /**
@@ -49,7 +49,7 @@ public class TwilioCalloutMock implements HttpCalloutMock {
         HttpResponse response = new HttpResponse();
         
         if (throwException) {
-            createExceptionMock();
+            throw new CalloutException(this.exceptionMessage);
         }else{
             response.setStatusCode(this.statusCode);
             response.setBody(this.responseBody);

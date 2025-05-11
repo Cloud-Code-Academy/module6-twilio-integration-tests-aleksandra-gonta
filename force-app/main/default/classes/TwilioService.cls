@@ -27,6 +27,8 @@ public with sharing class TwilioService {
         };
         
         HttpResponse response = makeHttpRequest('POST', '/Messages.json', params);
+         
+        System.debug('Response: ' + parseResponse(response));
         return parseResponse(response);
     }
     
