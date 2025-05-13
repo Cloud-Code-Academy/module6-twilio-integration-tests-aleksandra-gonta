@@ -28,6 +28,27 @@ private class TwilioRestApiTest {
         // TODO: Verify results
         // - Verify response XML is not null
         // - Verify response contains expected TwiML elements
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        RestContext.request = req;
+
+        req.requestURI = '/services/apexrest/twilio/sms';
+        req.httpMethod = 'POST';    
+        req.params.put('MessageSid', 'SM123456');
+        req.params.put('AccountSid', 'AC123456');
+        req.params.put('From', '1234567890');   
+        req.params.put('To', '1234567890');
+        req.params.put('Body', 'Test message'); 
+
+
+        Test.startTest();
+        String response = TwilioRestApi.handleIncomingSMS();
+        Test.stopTest();        
+
+        Assert.isNotNull(response, 'Response should not be null');
+        Assert.areEqual('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', response, 'Response should contain expected TwiML elements');
+
+        
     }
     
     /**
