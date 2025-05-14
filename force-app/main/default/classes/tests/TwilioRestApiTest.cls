@@ -14,20 +14,6 @@ private class TwilioRestApiTest {
      */
     @IsTest
     static void testHandleIncomingSMSStandard() {
-        // TODO: Setup mock REST request with standard SMS parameters
-        // - Create RestRequest and RestResponse objects
-        // - Set requestURI (e.g., '/services/apexrest/twilio/sms')
-        // - Set httpMethod to 'POST'
-        // - Add required parameters (MessageSid, AccountSid, From, To, Body, etc.)
-        
-        // TODO: Set the mock request/response objects in RestContext
-        
-        // TODO: Execute the test
-        // - Call TwilioRestApi.handleIncomingSMS()
-        
-        // TODO: Verify results
-        // - Verify response XML is not null
-        // - Verify response contains expected TwiML elements
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         RestContext.request = req;
@@ -46,7 +32,7 @@ private class TwilioRestApiTest {
         Test.stopTest();        
 
         Assert.isNotNull(response, 'Response should not be null');
-        Assert.areEqual('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', response, 'Response should contain expected TwiML elements');
+        Assert.areEqual('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', response, 'Response should contain expected elements');
 
         
     }
@@ -58,20 +44,32 @@ private class TwilioRestApiTest {
      */
     @IsTest
     static void testHandleIncomingSMSWithMedia() {
-        // TODO: Setup mock REST request with media parameters
-        // - Create RestRequest and RestResponse objects
-        // - Set requestURI and httpMethod
-        // - Add required parameters
-        // - Add media attachment parameters (NumMedia, MediaUrl0, MediaContentType0, etc.)
+       
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        RestContext.request = req;
+
+        req.requestURI = '/services/apexrest/twilio/sms';
+        req.httpMethod = 'POST';    
+        req.params.put('MessageSid', 'SM123456');
+        req.params.put('AccountSid', 'AC123456');
+        req.params.put('From', '1234567890');   
+        req.params.put('To', '1234567890');
+        req.params.put('Body', 'Test message'); 
+        req.params.put('NumMedia', '1');
+        req.params.put('MediaUrl', 'https://fastly.picsum.photos/id/383/200/300.jpg?hmac=sP8wzjNbIJGIPQg-3A86o43HsTopJPnwV73iSCwH9cw');
+        req.params.put('MediaContentType', 'image/jpeg');
+
+        RestContext.request = req;  
+        RestContext.response = res;
         
-        // TODO: Set the mock request/response objects in RestContext
-        
-        // TODO: Execute the test
-        // - Call TwilioRestApi.handleIncomingSMS()
-        
-        // TODO: Verify results
-        // - Verify response XML is not null
-        // - Verify response contains expected TwiML elements
+        Test.startTest();
+        String response = TwilioRestApi.handleIncomingSMS();
+        Test.stopTest();
+
+        Assert.isNotNull(response, 'Response should not be null');
+        Assert.areEqual('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', response, 'Response should contain expected elements');
+
     }
     
     /**
@@ -81,20 +79,31 @@ private class TwilioRestApiTest {
      */
     @IsTest
     static void testHandleIncomingSMSWithLocation() {
-        // TODO: Setup mock REST request with location parameters
-        // - Create RestRequest and RestResponse objects
-        // - Set requestURI and httpMethod
-        // - Add required parameters
-        // - Add location parameters (FromCity, FromState, FromZip, FromCountry, etc.)
+
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
         
-        // TODO: Set the mock request/response objects in RestContext
-        
-        // TODO: Execute the test
-        // - Call TwilioRestApi.handleIncomingSMS()
-        
-        // TODO: Verify results
-        // - Verify response XML is not null
-        // - Verify response contains expected TwiML elements
+        req.requestURI = '/services/apexrest/twilio/sms';
+        req.httpMethod = 'POST';
+
+        req.params.put('MessageSid', 'SM123456');
+        req.params.put('AccountSid', 'AC123456');
+        req.params.put('From', '1234567890');       
+        req.params.put('To', '1234567890');
+        req.params.put('Body', 'Test message');
+        req.params.put('FromCity', 'San Francisco');
+        req.params.put('FromState', 'CA');
+        req.params.put('FromZip', '94103');
+        req.params.put('FromCountry', 'US');
+    
+        RestContext.request = req;  
+        RestContext.response = res;
+
+        Test.startTest();
+        String response = TwilioRestApi.handleIncomingSMS();
+        Test.stopTest();
+        Assert.isNotNull(response, 'Response should not be null');
+        Assert.areEqual('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', response, 'Response should contain expected elements');
     }
     
     /**
@@ -104,20 +113,32 @@ private class TwilioRestApiTest {
      */
     @IsTest
     static void testHandleIncomingSMSWithWhatsApp() {
-        // TODO: Setup mock REST request with WhatsApp parameters
-        // - Create RestRequest and RestResponse objects
-        // - Set requestURI and httpMethod
-        // - Add required parameters with WhatsApp format (e.g., From: 'whatsapp:+15551234567')
-        // - Add WhatsApp specific parameters (ProfileName, WaId, etc.)
-        // - Add WhatsApp location data if applicable
-        
-        // TODO: Set the mock request/response objects in RestContext
-        
-        // TODO: Execute the test
-        // - Call TwilioRestApi.handleIncomingSMS()
-        
-        // TODO: Verify results
-        // - Verify response XML is not null
-        // - Verify response contains expected TwiML elements
+
+     RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        RestContext.request = req;  
+        req.requestURI = '/services/apexrest/twilio/sms';
+        req.httpMethod = 'POST';
+       
+        req.params.put('MessageSid', 'SM123456');
+        req.params.put('AccountSid', 'AC123456');
+        req.params.put('From', 'whatsapp:+15551234567');    
+        req.params.put('To', 'whatsapp:+15551234567');
+        req.params.put('Body', 'Test message');
+        req.params.put('ProfileName', 'Test Profile');  
+        req.params.put('WaId', '1234567890');
+        req.params.put('Forwarded', 'false');   
+        req.params.put('FrequentlyForwarded', 'false');
+        req.params.put('ButtonText', 'Test Button');
+
+        RestContext.request = req;  
+        RestContext.response = res;
+
+        Test.startTest();
+        String response = TwilioRestApi.handleIncomingSMS();
+        Test.stopTest();
+
+        Assert.isNotNull(response, 'Response should not be null');
+        Assert.areEqual('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', response, 'Response should contain expected elements');
     }
 } 
